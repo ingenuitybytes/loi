@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 '''This is the main file.
-It starts alpha.
+It starts the assistant.
 '''
 
 # Import modules and files
 import os
 from dotenv import load_dotenv
-import requests
-import io
 import openai
 import boto3
 import speech_recognition as sr
 from playsound import playsound
+import io
+import requests
 from PIL import Image
 
 import utils
@@ -57,11 +57,14 @@ def speak(text):
                                        VoiceId='Daniel',
                                        Engine='neural',
                                        LanguageCode='de-DE')
-    
     audio_stream = response['AudioStream'].read()
-    with open('output.mp3', 'wb') as file:
+    subfolder = "resources"
+    if not os.path.exists(subfolder):
+        os.makedirs(subfolder)
+    file_path = os.path.join(subfolder, 'output.mp3')
+    with open(file_path, 'wb') as file:
         file.write(audio_stream)
-    playsound('output.mp3')
+    playsound(file_path)
 
 def generate_image(picture_query):
     openai.api_key = os.getenv("OPENAI_API_KEY")

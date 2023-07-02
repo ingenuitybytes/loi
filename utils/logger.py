@@ -15,7 +15,7 @@ DATEFORMAT = '%d/%b/%Y %H:%M:%S'
 
 # Logger erstellen
 logger = colorlog.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Set formatter
 formatter = colorlog.ColoredFormatter(LOGFORMAT, datefmt=DATEFORMAT,
