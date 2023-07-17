@@ -80,6 +80,7 @@ def display_image(image_url):
     image = Image.open(io.BytesIO(response.content))
     image.show()
 
+
 if __name__ == "__main__":
     load_api_keys()
     while True:
