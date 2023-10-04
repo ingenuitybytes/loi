@@ -1,1 +1,1 @@
-# VA.LOI
+# LOI
