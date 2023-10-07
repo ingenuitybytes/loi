@@ -3,32 +3,48 @@
 It contains the logger configuration.
 '''
 
-# Import modules and files
 import logging
+import logging.handlers
 import colorlog
 
 
-# Configure logging variables
-LOG_LEVEL = logging.DEBUG
-LOGFORMAT = '%(log_color)s%(levelname)-10s%(reset)s[%(asctime)s] %(name)s: %(message)s'
-DATEFORMAT = '%d/%b/%Y %H:%M:%S'
+def setup_logger():
+    LOG_LEVEL = logging.INFO
+    LOGFORMAT_CONSOLE = '%(log_color)s%(levelname)-10s%(reset)s[%(asctime)s] %(name)s: %(message)s'
+    LOGFORMAT_FILE = '%(levelname)-10s[%(asctime)s] %(name)s: %(message)s'
+    DATEFORMAT = '%d/%b/%Y %H:%M:%S'
 
-# Logger erstellen
-logger = colorlog.getLogger()
-logger.setLevel(logging.INFO)
+    # Setze Logging-Level für discord und discord.http
+    logger = logging.getLogger()
+    logger.setLevel(LOG_LEVEL)
 
-# Set formatter
-formatter = colorlog.ColoredFormatter(LOGFORMAT, datefmt=DATEFORMAT,
-    log_colors={
-        'DEBUG': 'white',
+    # console handler
+    stream = logging.StreamHandler()
+    formatter_console = colorlog.ColoredFormatter(
+        LOGFORMAT_CONSOLE, 
+        datefmt=DATEFORMAT,
+        log_colors={
+            'DEBUG': 'white',
             'INFO': 'green',
             'WARNING': 'yellow',
             'ERROR': 'red',
-            'CRITICAL': 'red',
-            'SUCCESS': 'green'
-    })
+            'CRITICAL': 'red,bg_white',
+        }
+    )
+    stream.setFormatter(formatter_console)
+    logger.addHandler(stream)
 
-handler = colorlog.StreamHandler()
-handler.setFormatter(formatter)
+    # file handler
+    file_handler = logging.handlers.RotatingFileHandler(
+        filename='console.log',
+        encoding='utf-8',
+        maxBytes=32 * 1024 * 1024,  # 32 MiB
+        backupCount=5
+    )
+    formatter_file = logging.Formatter(LOGFORMAT_FILE, DATEFORMAT)
+    file_handler.setFormatter(formatter_file)
+    logger.addHandler(file_handler)
+    
+    return logger
 
-logger.addHandler(handler)
+log = setup_logger()
