@@ -17,6 +17,8 @@ class Assistant:
     def __init__(self):
         Config.check_required_configs()
         self._initialize_resources_folder()
+        # Signalhandler für sauberes Beenden hinzufügen
+        signal.signal(signal.SIGINT, self._graceful_exit)
         self.speech_recognizer = SpeechRecognizer()
         self.text_to_speech = TextToSpeech(Config.AWS_ACCESS_KEY_ID, Config.AWS_SECRET_ACCESS_KEY)
         self.openai_handler = OpenAIHandler(Config.OPENAI_API_KEY)
@@ -31,9 +33,6 @@ class Assistant:
         exit(0)
 
     def run(self):
-        # Signalhandler für sauberes Beenden hinzufügen
-        signal.signal(signal.SIGINT, self._graceful_exit)
-        
         while True:
             try:
                 command = self.speech_recognizer.recognize()
